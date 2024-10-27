@@ -9,6 +9,10 @@ BIN := target
 CLASS_PATH := $(BIN)/classes
 VPATH = $(BIN):$(CLASS_PATH)/$(PROJECT):$(SRC)/$(PROJECT)
 
+.PHONY: get_dep
+get_dep: dep dep.txt
+	@while read l; do curl "$$l" -o dep/junit.jar; done < dep.txt
+
 .PHONY: clean
 clean:
 	rm -rf $(BIN)/*
@@ -23,6 +27,9 @@ run_jar: package
 
 .PHONY: package
 package: $(JAR)
+
+dep: 
+	mkdir dep
 
 $(MAIN_CLASS): $(SRC)/$(PROJECT)/**/*.java $(MAIN_JAVA)
 	javac -d ./$(CLASS_PATH) $(SRC)/$(PROJECT)/**/*.java $(SRC)/$(PROJECT)/*.java
